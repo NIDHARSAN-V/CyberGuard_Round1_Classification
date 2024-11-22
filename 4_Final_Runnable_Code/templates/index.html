@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Classification</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Background and General Layout */
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #121212;
+            color: #00ff00;
+            padding: 50px;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            width: 500px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 36px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            animation: flicker 1s infinite alternate;
+        }
+
+        /* Glitch effect for heading */
+        @keyframes flicker {
+            0% { text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00; }
+            100% { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00, 0 0 20px #00ff00; }
+        }
+
+        /* Form Styling */
+        textarea {
+            width: 100%;
+            padding: 15px;
+            background-color: #1d1d1d;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            color: #00ff00;
+            font-size: 16px;
+            font-family: 'Courier New', Courier, monospace;
+            resize: none;
+            transition: border 0.3s ease-in-out;
+        }
+
+        textarea:focus {
+            border-color: #ff00ff;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #00ff00;
+            border: none;
+            border-radius: 5px;
+            color: black;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ff00ff;
+            color: black;
+            transform: scale(1.05);
+        }
+
+        /* Result Box */
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        /* Glitch effect on result */
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Animation on buttons for clicks */
+        button:active {
+            transform: scale(0.98);
+            background-color: #ff00ff;
+        }
+
+        /* Matrix-like Falling 0s and 1s Effect */
+        .matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .matrix span {
+            position: absolute;
+            color: #00ff00;
+            font-size: 20px;
+            opacity: 0;
+            animation: fall 0.1s linear infinite;
+        }
+
+        /* Animation for falling binary digits */
+        @keyframes fall {
+            0% {
+                top: -20px;
+                opacity: 1;
+            }
+            100% {
+                top: 100%;
+                opacity: 1;
+            }
+        }
+
+        .matrix span:nth-child(odd) {
+            animation-duration: 2s;
+        }
+
+        .matrix span:nth-child(even) {
+            animation-duration: 2.5s;
+        }
+
+        /* Cyberpunk style background */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="matrix">
+        <!-- Dynamically generate falling 0s and 1s using JavaScript -->
+        <script>
+            for (let i = 0; i < 500; i++) {
+                let span = document.createElement('span');
+                span.textContent = Math.random() > 0.5 ? '0' : '1';
+                span.style.left = `${Math.random() * 100}%`;
+                span.style.animationDelay = `${Math.random() * 2}s`;
+                document.querySelector('.matrix').appendChild(span);
+            }
+        </script>
+    </div>
+    <div class="container">
+        <h1>Text Classification</h1>
+        <form method="POST">
+            <label for="unknown_text">Enter Text for Classification:</label><br>
+            <textarea id="unknown_text" name="unknown_text" rows="4" cols="50">{{ unknown_text }}</textarea><br><br>
+            <button type="submit">Classify</button>
+        </form>
+        
+        {% if predicted_sub_category %}
+        <div class="result">
+            <h3>Prediction Result:</h3>
+            <p><strong>Sub-category:</strong> {{ predicted_sub_category }}</p>
+            <p><strong>Main Category:</strong> {{ category }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
